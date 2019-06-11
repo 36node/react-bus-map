@@ -1,9 +1,9 @@
 {
-  "name": "react-bus-map",
-  "version": "0.0.0",
+  "name": "@36node/react-bus-map",
+  "version": "0.0.1",
   "description": "A module boilerplate for react component.",
   "repository": {
-    "url": "Li Dong/react-bus-map",
+    "url": "zzswang/react-bus-map",
     "type": "git"
   },
   "license": "MIT",

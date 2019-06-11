@@ -50,7 +50,7 @@ const AMAP_STYLE = "amap://styles/14ae2934af01871a240b06db5f4df292";
  */
 
 export default class BusMap extends React.Component {
-  zoom = (this.props.options && this.props.options.zoom) || 11;
+  zoom = this.props.zoom || 11;
   vehicleMarkers = {};
   clusterMarkers = new Set();
 
@@ -62,6 +62,7 @@ export default class BusMap extends React.Component {
     onMapMoved: PropTypes.func, // 当用户拖动地图时触发,
     mapStyle: PropTypes.string, // 地图样式
     center: PropTypes.array, // 地图的起始center
+    zoom: PropTypes.array, // 地图的起始zoom
   };
 
   // Set default props

@@ -1,10 +1,21 @@
-# @36node/template-react-component
+# @36node/react-bus-map
 
 ## Install
 
 ```bash
-yarn add @36node/template-react-component
+yarn add @36node/react-bus-map
 ```
+
+## propTypes
+
+parks: PropTypes.array, // 停车场的数据信息
+vehicles: PropTypes.array, // 车辆的数据信息
+selectedVehicleId: PropTypes.string, // 用户选择的车辆
+onSelectVehicle: PropTypes.func, // 当用户点击 marker 时触发, 改变 selectedVehicleId
+onMapMoved: PropTypes.func, // 当用户拖动地图时触发,
+mapStyle: PropTypes.string, // 地图样式
+center: PropTypes.array, // 地图的起始 center
+zoom: PropTypes.int, // 地图的起始 zoom
 
 ## Contributing
 
