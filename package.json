@@ -51,7 +51,10 @@
     "lodash": "^4.17.11",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "styled-components": "^4.1.3"
+    "styled-components": "^4.1.3",
+    "react-amap": "^1.2.8",
+    "antd": "^3.19.3",
+    "prop-types": "^15.7.2"
   },
   "devDependencies": {
     "@36node/eslint-config": "^0.6.1",
@@ -67,9 +70,7 @@
     "husky": "^1.3.1",
     "lint-staged": "^8.1.5",
     "prettier": "1.17.1",
-    "standard-version": "^6.0.1",
-    "react-amap": "^1.2.8",
-    "antd": "^3.19.3"
+    "standard-version": "^6.0.1"
   },
   "gitHead": "ea05e5cac29e7d2faea55e14cc655b205ed2173e"
 }
