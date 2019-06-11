@@ -1,0 +1,75 @@
+{
+  "name": "@36node/react-bus-map",
+  "version": "0.0.1",
+  "description": "A module boilerplate for react component.",
+  "repository": {
+    "url": "zzswang/react-bus-map",
+    "type": "git"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "template": "react-component",
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "config-overrides-path": "node_modules/@36node/sketch/config-overrides",
+  "main": "dist/index.js",
+  "umd:main": "dist/index.umd.js",
+  "module": "dist/index.mjs",
+  "source": "src/index.js",
+  "typings": "typings/index.d.ts",
+  "scripts": {
+    "build": "sketch build",
+    "format": "prettier --trailing-comma es5 --write 'src/**/*.js'",
+    "lint": "sketch lint src",
+    "release": "standard-version",
+    "test": "sketch test --env=jsdom",
+    "storybook": "start-storybook -p 9009 -s public"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -e $GIT_PARAMS",
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run lint"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run format",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "styled-components": "^4.1.3"
+  },
+  "devDependencies": {
+    "@36node/eslint-config": "^0.6.1",
+    "@36node/sketch": "^0.11.3",
+    "@commitlint/cli": "^7.5.2",
+    "@commitlint/config-conventional": "^7.5.0",
+    "@storybook/addon-actions": "^5.0.3",
+    "@storybook/addon-links": "^5.0.3",
+    "@storybook/addons": "^5.0.3",
+    "@storybook/react": "^5.0.3",
+    "@types/react": "^16.8.8",
+    "@types/react-dom": "^16.8.2",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.5",
+    "prettier": "1.17.1",
+    "standard-version": "^6.0.1",
+    "react-amap": "^1.2.8",
+    "antd": "^3.19.3"
+  },
+  "gitHead": "ea05e5cac29e7d2faea55e14cc655b205ed2173e"
+}
