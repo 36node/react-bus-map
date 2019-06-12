@@ -5,7 +5,6 @@ import { has, isEqual } from "lodash";
 
 import { AMAP_KEY } from "./config";
 import ClusterPoint from "./cluster";
-import Iconfont from "./iconfont";
 
 const MarkerLabel = ({ data, selected }) => (
   <div
@@ -28,8 +27,13 @@ const MarkerLabel = ({ data, selected }) => (
 const MarkerIcon = ({ selected, data }) => {
   const { state = "RUNNING", type } = data;
   const icon = type === "park" ? "park" : `bus-${state.toLowerCase()}`;
-  return (
-    <Iconfont type={icon} selected={selected} style={{ fontSize: "1rem" }} />
+  return this.props.setIconFont ? (
+    this.props.setIconFont(icon, selected, data)
+  ) : (
+    <img
+      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAChElEQVRYR82XXW7TQBDHd5y8JRLhBIS3xGsJcwLaE5CcgHAC2hNQTkA4AeUEhBPQnoAi7Tp5I9ygkbJvzg6aaI38tR8uqcS++MHe2d/O138MrMOK4ziNougVY2yGiCMASGk7It4BwD1jbKW1vs2y7C7ULIR8mCTJGWPsPWOMniHrhjH2QQhBT+fyAsRxvIyi6J3PUNt7RFxKKS9de60A4/F4NBwOv3a4des5FB6l1Pl2u6UQNZYVgHO+AoDXD7l5y56VEGIeDJAkyZWJ+YnOP5qhnCC7ldXwwGQyGff7/V+nPLmwlef5881msy3bbgBwzq8B4M1jACDiFynlwgmQJAklyxMXACL+RkRyZ1HvKQBcAcAzD/i9EOKpFWA6nc56vR5lvnUh4jel1KKe1VQ1g8GAvOdM3MPhMF+v16vigEoIApJvt9/vx7aSMqVLMXZ5sJKMnQC01p+yLLtweSigcdkBfJsR8VJKuXQBBHjx4R6w1XIZ6J8AOOcXAPDRdkNKQCnlzOMBEiBSzNZV92IlB4zc/vCU0rlN5Yxqfnft11q/LMt1oxEF9AHqE/M6hDmcSnjkANgJISrvGwC+RCyMmyHkWM+IOCuGE8/tG1X0/2kB3SDUCx31IkwNyahpqzcA8KLjIbbM/6mUOmvroNaBxFQElZRTmAIAd3mep3UZbtWCurE4jhdRFH0OOMT6SV186h8+6lAa0jm9AETMOae5v2s+3AohvGN8EECgzP71Lg0sSqnUJtvlMAQB0IaQNlsYrrdbVw4FA5hQOMWKvtFav82y7Do0cTsBGAjr/0Lb0OkD6Qxga1KIaG02JwtBYailSTmbzckBiqRExGOsSQ27/JKXgf4AxENJMOhT4FoAAAAASUVORK5CYII="
+      alt=""
+    />
   );
 };
 const AMAP_STYLE = "amap://styles/14ae2934af01871a240b06db5f4df292";
@@ -60,6 +64,7 @@ export default class BusMap extends React.Component {
     selectedVehicleId: PropTypes.string, // 用户选择的车辆
     onSelectVehicle: PropTypes.func, // 当用户点击marker时触发, 改变selectedVehicleId
     onMapMoved: PropTypes.func, // 当用户拖动地图时触发,
+    setIconFont: PropTypes.func, // 设置地区icon,
     mapStyle: PropTypes.string, // 地图样式
     center: PropTypes.array, // 地图的起始center
     zoom: PropTypes.array, // 地图的起始zoom
