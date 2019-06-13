@@ -22,6 +22,7 @@ yarn add @36node/react-bus-map
 
 ```js
 import Map from "@36node/react-bus-map";
+
 <Map
   vehicles={
     [
@@ -55,14 +56,6 @@ import Map from "@36node/react-bus-map";
 3. Commit your changes: `git commit -am 'Add some feature'`
 4. Push to the branch: `git push origin my-new-feature`
 5. Submit a pull request :D
-
-## Author
-
-**module** © [36node](https://github.com/36node), Released under the [MIT](./LICENSE) License.
-
-Authored and maintained by 36node with help from contributors ([list](https://github.com/36node/module/contributors)).
-
-> [github.com/zzswang](https://github.com/zzswang) · GitHub [@36node](https://github.com/36node)
 
 [0]: https://img.shields.io/npm/v/@36node/template-module.svg?style=flat
 [1]: https://npmjs.com/package/@36node/template-module
