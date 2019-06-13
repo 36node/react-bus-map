@@ -6,6 +6,10 @@
     "url": "zzswang/react-bus-map",
     "type": "git"
   },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "template": "react-component",
   "files": [
     "bin",
