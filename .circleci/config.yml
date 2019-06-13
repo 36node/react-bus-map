@@ -55,6 +55,27 @@ jobs:
           name: Publish Package
           command: npm publish
 
+  bump:
+    <<: *defaults
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "a3:8f:92:e2:70:62:d3:a1:01:6c:14:4e:a4:21:d1:99"
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Dependences
+          command: yarn install
+      - run:
+          name: git config
+          command: |
+            git config --global user.email "robot@circleci.com"
+            git config --global user.name "robot"
+      - run:
+          name: bump version
+          command: bin/bump.sh
+
 workflows:
   version: 2
   main:
