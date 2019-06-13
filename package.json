@@ -1,6 +1,6 @@
 {
   "name": "@36node/react-bus-map",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "React component for bus map.",
   "repository": {
     "url": "zzswang/react-bus-map",
