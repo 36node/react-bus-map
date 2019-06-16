@@ -3,7 +3,7 @@
   "version": "0.0.6",
   "description": "React component for bus map.",
   "repository": {
-    "url": "zzswang/react-bus-map",
+    "url": "36node/react-bus-map",
     "type": "git"
   },
   "license": "MIT",
