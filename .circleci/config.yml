@@ -7,18 +7,18 @@ defaults: &defaults
 
 jobs:
 
-  build:
+  install:
     <<: *defaults
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "a3:8f:92:e2:70:62:d3:a1:01:6c:14:4e:a4:21:d1:99"
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "yarn.lock" }}
       - run:
           name: Install Dependences
           command: yarn install
-      - run:
-          name: Build Package
-          command: NODE_ENV=production yarn build
       - save_cache:
           key: dependency-cache-{{ checksum "yarn.lock" }}
           paths:
@@ -58,15 +58,8 @@ jobs:
   bump:
     <<: *defaults
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "a3:8f:92:e2:70:62:d3:a1:01:6c:14:4e:a4:21:d1:99"
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "yarn.lock" }}
-      - run:
-          name: Install Dependences
-          command: yarn install
+      - attach_workspace:
+          at: ~/repo
       - run:
           name: git config
           command: |
@@ -80,13 +73,13 @@ workflows:
   version: 2
   main:
     jobs:
-      - build:
-          filters:  # required since `release` has tag filters AND requires `build`
+      - install:
+          filters:  # required since `release` has tag filters AND requires `install`
             tags:
               only: /.*/
       - test:
           requires:
-            - build
+            - install
           filters:  # required since `release` has tag filters AND requires `test`
             tags:
               only: /.*/
@@ -108,4 +101,7 @@ workflows:
               only:
                 - master
     jobs:
-      - bump
+      - install
+      - bump:
+          requires:
+            - install

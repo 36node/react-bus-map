@@ -17,7 +17,7 @@ yarn add @36node/react-bus-map
 - onMapMoved: PropTypes.func, // 当用户拖动地图时触发,
 - mapStyle: PropTypes.string, // 地图样式
 - center: PropTypes.array, // 地图的起始 center
-- zoom: PropTypes.int, // 地图的起始 zoom
+- zoom: PropTypes.number, // 地图的起始 zoom
 - setIconFont: PropTypes.func, // 设置地区 icon,
 
 ## example
@@ -39,7 +39,7 @@ import Map from "@36node/react-bus-map";
   zoom={11}
   onMapMoved={this.handleMapMoved}
   setIconFont={
-    (icon, selected, data) => (
+    (selected, data) => (
       <IconFont
         type={icon}
         selected={selected}
