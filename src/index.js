@@ -29,14 +29,14 @@ export default class BusMap extends React.Component {
   clusterMarkers = new Set();
 
   static propTypes = {
-    parks: PropTypes.array, // 停车场的数据信息
-    vehicles: PropTypes.array, // 车辆的数据信息
-    selectedVehicleId: PropTypes.string, // 用户选择的车辆
-    onSelectVehicle: PropTypes.func, // 当用户点击marker时触发, 改变selectedVehicleId
-    onMapMoved: PropTypes.func, // 当用户拖动地图时触发,
-    mapStyle: PropTypes.string, // 地图样式
     center: PropTypes.array, // 地图的起始center
+    mapStyle: PropTypes.string, // 地图样式
+    onMapMoved: PropTypes.func, // 当用户拖动地图时触发,
+    onSelectVehicle: PropTypes.func, // 当用户点击marker时触发, 改变selectedVehicleId
+    parks: PropTypes.array, // 停车场的数据信息
+    selectedVehicleId: PropTypes.string, // 用户选择的车辆
     setIconFont: PropTypes.func, // 设置地区icon,
+    vehicles: PropTypes.array, // 车辆的数据信息
     zoom: PropTypes.number, // 地图的起始zoom
   };
 
