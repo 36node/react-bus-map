@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.9](https://github.com/36node/react-bus-map/compare/v0.0.8...v0.0.9) (2019-06-16)
+
+
+### Bug Fixes
+
+* react-bus-map ([0523eb0](https://github.com/36node/react-bus-map/commit/0523eb0))
+
+
+
 ### [0.0.8](https://github.com/36node/react-bus-map/compare/v0.0.7...v0.0.8) (2019-06-16)
 
 
