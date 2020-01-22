@@ -49,6 +49,8 @@ export interface BusMapProps {
   gridSize: number; // 聚合点gridSize,
   mapKey: string; // 地图key
   fixedTitle: boolean; // 固定车辆title
+  hoverTitle: boolean; // 鼠标hover车辆的时候是否显示title
+  vehicleAnimationDisThreshold: number; // 车辆动画距离阈值，默认500， 阈值越大，跳点越少
 }
 
 export default BusMap;

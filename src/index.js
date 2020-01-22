@@ -68,11 +68,14 @@ export default class BusMap extends React.Component {
     clusterComponent: PropTypes.func, // 聚合marker component
     minClusterSize: PropTypes.number, // 聚合点minClusterSize,
     gridSize: PropTypes.number, // 聚合点gridSize,
+    hoverTitle: PropTypes.bool, // 鼠标hover 显示titile
+    vehicleAnimationDisThreshold: PropTypes.number, // 车辆动画距离阈值，默认500， 阈值越大，跳点越少
   };
 
   // Set default props
   static defaultProps = {
     mapStyle: AMAP_STYLE,
+    vehicleAnimationDisThreshold: 500,
   };
 
   mapEvents = {
@@ -104,10 +107,33 @@ export default class BusMap extends React.Component {
       }
     },
     mouseover: (e, marker) => {
-      marker.render(this.renderMarkersLayout);
+      if (!this.props.fixedTitle && this.props.hoverTitle) {
+        const extData = marker.getExtData();
+        this.setState(
+          {
+            curVehicleId: extData.id,
+          },
+          () => {
+            marker.render(this.renderHoverMarkersLayout);
+          }
+        );
+      } else {
+        marker.render(this.renderMarkersLayout);
+      }
     },
     mouseout: (e, marker) => {
-      marker.render(this.renderMarkersLayout);
+      if (!this.props.fixedTitle && this.props.hoverTitle) {
+        this.setState(
+          {
+            curVehicleId: null,
+          },
+          () => {
+            marker.render(this.renderHoverMarkersLayout);
+          }
+        );
+      } else {
+        marker.render(this.renderMarkersLayout);
+      }
     },
   };
 
@@ -190,7 +216,9 @@ export default class BusMap extends React.Component {
     } else {
       const oldP = marker.getPosition();
       const distance = oldP.distance(newP);
-      if (distance > 500) {
+      const { vehicleAnimationDisThreshold = 500 } = this.props;
+
+      if (distance > vehicleAnimationDisThreshold) {
         marker.setPosition(newP);
       } else if (distance > 10) {
         try {
@@ -250,6 +278,22 @@ export default class BusMap extends React.Component {
         <MarkerLabel selected data={extData} />
         <MarkerIcon
           selected
+          data={extData}
+          setIconFont={this.props.setIconFont}
+        />
+      </div>
+    );
+  };
+
+  renderHoverMarkersLayout = extData => {
+    const selected = extData.id === this.state.curVehicleId;
+    return (
+      <div style={{ position: "relative" }}>
+        {extData.id && (this.props.fixedTitle || selected) && (
+          <MarkerLabel selected data={extData} />
+        )}
+        <MarkerIcon
+          selected={selected}
           data={extData}
           setIconFont={this.props.setIconFont}
         />
