@@ -3,10 +3,36 @@ import { Map, Markers } from "react-amap";
 import PropTypes from "prop-types";
 import { has, isEqual } from "lodash";
 
-import { AMAP_KEY } from "./config";
-import ClusterPoint from "./cluster";
-
 const AMAP_STYLE = "amap://styles/14ae2934af01871a240b06db5f4df292";
+
+const MarkerLabel = ({ data }) => (
+  <div
+    style={{
+      background: "#27303E",
+      color: "white",
+      borderRadius: 5,
+      padding: 5,
+      position: "absolute",
+      left: "50%",
+      transform: "translate(-50%, -110%)",
+      whiteSpace: "nowrap",
+      fontSize: "1rem",
+    }}
+  >
+    {data.title || "暂无数据"}
+  </div>
+);
+
+const MarkerIcon = ({ selected, data, setIconFont }) => {
+  return setIconFont ? (
+    setIconFont(selected, data)
+  ) : (
+    <img
+      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAChElEQVRYR82XXW7TQBDHd5y8JRLhBIS3xGsJcwLaE5CcgHAC2hNQTkA4AeUEhBPQnoAi7Tp5I9ygkbJvzg6aaI38tR8uqcS++MHe2d/O138MrMOK4ziNougVY2yGiCMASGk7It4BwD1jbKW1vs2y7C7ULIR8mCTJGWPsPWOMniHrhjH2QQhBT+fyAsRxvIyi6J3PUNt7RFxKKS9de60A4/F4NBwOv3a4des5FB6l1Pl2u6UQNZYVgHO+AoDXD7l5y56VEGIeDJAkyZWJ+YnOP5qhnCC7ldXwwGQyGff7/V+nPLmwlef5881msy3bbgBwzq8B4M1jACDiFynlwgmQJAklyxMXACL+RkRyZ1HvKQBcAcAzD/i9EOKpFWA6nc56vR5lvnUh4jel1KKe1VQ1g8GAvOdM3MPhMF+v16vigEoIApJvt9/vx7aSMqVLMXZ5sJKMnQC01p+yLLtweSigcdkBfJsR8VJKuXQBBHjx4R6w1XIZ6J8AOOcXAPDRdkNKQCnlzOMBEiBSzNZV92IlB4zc/vCU0rlN5Yxqfnft11q/LMt1oxEF9AHqE/M6hDmcSnjkANgJISrvGwC+RCyMmyHkWM+IOCuGE8/tG1X0/2kB3SDUCx31IkwNyahpqzcA8KLjIbbM/6mUOmvroNaBxFQElZRTmAIAd3mep3UZbtWCurE4jhdRFH0OOMT6SV186h8+6lAa0jm9AETMOae5v2s+3AohvGN8EECgzP71Lg0sSqnUJtvlMAQB0IaQNlsYrrdbVw4FA5hQOMWKvtFav82y7Do0cTsBGAjr/0Lb0OkD6Qxga1KIaG02JwtBYailSTmbzckBiqRExGOsSQ27/JKXgf4AxENJMOhT4FoAAAAASUVORK5CYII="
+      alt=""
+    />
+  );
+};
 
 /**
  * 地图组件
@@ -29,49 +55,28 @@ export default class BusMap extends React.Component {
   clusterMarkers = new Set();
 
   static propTypes = {
+    parks: PropTypes.array, // 停车场的数据信息
     center: PropTypes.array, // 地图的起始center
+    vehicles: PropTypes.array, // 车辆的数据信息
     mapStyle: PropTypes.string, // 地图样式
+    mapKey: PropTypes.string, // 地图key
     onMapMoved: PropTypes.func, // 当用户拖动地图时触发,
     onSelectVehicle: PropTypes.func, // 当用户点击marker时触发, 改变selectedVehicleId
-    parks: PropTypes.array, // 停车场的数据信息
     selectedVehicleId: PropTypes.string, // 用户选择的车辆
-    setIconFont: PropTypes.func, // 设置地区icon,
-    vehicles: PropTypes.array, // 车辆的数据信息
+    setIconFont: PropTypes.func, // 设置车辆icon
     zoom: PropTypes.number, // 地图的起始zoom
+    clusterComponent: PropTypes.func, // 聚合marker component
+    minClusterSize: PropTypes.number, // 聚合点minClusterSize,
+    gridSize: PropTypes.number, // 聚合点gridSize,
+    hoverTitle: PropTypes.bool, // 鼠标hover 显示titile
+    vehicleAnimationDisThreshold: PropTypes.number, // 车辆动画距离阈值，默认500， 阈值越大，跳点越少
+    reRenderState: PropTypes.string, // 重绘状态，如果 重绘状态发生改变那就重绘地图
   };
 
   // Set default props
   static defaultProps = {
     mapStyle: AMAP_STYLE,
-  };
-
-  MarkerLabel = ({ data, selected }) => (
-    <div
-      style={{
-        background: "#27303E",
-        color: "white",
-        borderRadius: 5,
-        padding: 5,
-        position: "absolute",
-        left: "50%",
-        transform: "translate(-50%, -110%)",
-        whiteSpace: "nowrap",
-        fontSize: "1rem",
-      }}
-    >
-      {data.title || "暂无数据"}
-    </div>
-  );
-
-  MarkerIcon = ({ selected, data }) => {
-    return this.props.setIconFont ? (
-      this.props.setIconFont(selected, data)
-    ) : (
-      <img
-        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAChElEQVRYR82XXW7TQBDHd5y8JRLhBIS3xGsJcwLaE5CcgHAC2hNQTkA4AeUEhBPQnoAi7Tp5I9ygkbJvzg6aaI38tR8uqcS++MHe2d/O138MrMOK4ziNougVY2yGiCMASGk7It4BwD1jbKW1vs2y7C7ULIR8mCTJGWPsPWOMniHrhjH2QQhBT+fyAsRxvIyi6J3PUNt7RFxKKS9de60A4/F4NBwOv3a4des5FB6l1Pl2u6UQNZYVgHO+AoDXD7l5y56VEGIeDJAkyZWJ+YnOP5qhnCC7ldXwwGQyGff7/V+nPLmwlef5881msy3bbgBwzq8B4M1jACDiFynlwgmQJAklyxMXACL+RkRyZ1HvKQBcAcAzD/i9EOKpFWA6nc56vR5lvnUh4jel1KKe1VQ1g8GAvOdM3MPhMF+v16vigEoIApJvt9/vx7aSMqVLMXZ5sJKMnQC01p+yLLtweSigcdkBfJsR8VJKuXQBBHjx4R6w1XIZ6J8AOOcXAPDRdkNKQCnlzOMBEiBSzNZV92IlB4zc/vCU0rlN5Yxqfnft11q/LMt1oxEF9AHqE/M6hDmcSnjkANgJISrvGwC+RCyMmyHkWM+IOCuGE8/tG1X0/2kB3SDUCx31IkwNyahpqzcA8KLjIbbM/6mUOmvroNaBxFQElZRTmAIAd3mep3UZbtWCurE4jhdRFH0OOMT6SV186h8+6lAa0jm9AETMOae5v2s+3AohvGN8EECgzP71Lg0sSqnUJtvlMAQB0IaQNlsYrrdbVw4FA5hQOMWKvtFav82y7Do0cTsBGAjr/0Lb0OkD6Qxga1KIaG02JwtBYailSTmbzckBiqRExGOsSQ27/JKXgf4AxENJMOhT4FoAAAAASUVORK5CYII="
-        alt=""
-      />
-    );
+    vehicleAnimationDisThreshold: 500,
   };
 
   mapEvents = {
@@ -103,23 +108,49 @@ export default class BusMap extends React.Component {
       }
     },
     mouseover: (e, marker) => {
-      marker.render(this.renderMarkersLayout);
+      if (!this.props.fixedTitle && this.props.hoverTitle) {
+        const extData = marker.getExtData();
+        this.setState(
+          {
+            curVehicleId: extData.id,
+          },
+          () => {
+            marker.render(this.renderHoverMarkersLayout);
+          }
+        );
+      } else {
+        marker.render(this.renderMarkersLayout);
+      }
     },
     mouseout: (e, marker) => {
-      marker.render(this.renderMarkersLayout);
+      if (!this.props.fixedTitle && this.props.hoverTitle) {
+        this.setState(
+          {
+            curVehicleId: null,
+          },
+          () => {
+            marker.render(this.renderHoverMarkersLayout);
+          }
+        );
+      } else {
+        marker.render(this.renderMarkersLayout);
+      }
     },
   };
 
   clusterOptions = {
-    minClusterSize: 5,
+    minClusterSize: this.props.minClusterSize || 5,
     maxZoom: 16,
     zoomOnClick: true,
-    gridSize: 80,
+    gridSize: this.props.gridSize || 120,
     averageCenter: true,
     renderCluserMarker: ({ markers, marker }) => {
       const vehicles = markers.map(m => m.getExtData()).filter(v => v);
       vehicles.forEach(v => this.clusterMarkers.add(v.id));
-      marker.setContent(ClusterPoint({ vehicles }));
+
+      if (this.props.clusterComponent) {
+        marker.setContent(this.props.clusterComponent({ vehicles }));
+      }
     },
   };
 
@@ -142,6 +173,11 @@ export default class BusMap extends React.Component {
 
     // 停车场数据有更新，刷新地图
     if (!isEqual(nextProps.parks, this.props.parks)) {
+      return true;
+    }
+
+    // 重绘状态改变
+    if (nextProps.reRenderState !== this.props.reRenderState) {
       return true;
     }
 
@@ -186,7 +222,9 @@ export default class BusMap extends React.Component {
     } else {
       const oldP = marker.getPosition();
       const distance = oldP.distance(newP);
-      if (distance > 500) {
+      const { vehicleAnimationDisThreshold = 500 } = this.props;
+
+      if (distance > vehicleAnimationDisThreshold) {
         marker.setPosition(newP);
       } else if (distance > 10) {
         try {
@@ -243,18 +281,45 @@ export default class BusMap extends React.Component {
   renderClickLayout = extData => {
     return (
       <div style={{ position: "relative" }}>
-        <this.MarkerLabel selected data={extData} />
-        <this.MarkerIcon selected data={extData} />
+        <MarkerLabel selected data={extData} />
+        <MarkerIcon
+          selected
+          data={extData}
+          setIconFont={this.props.setIconFont}
+        />
+      </div>
+    );
+  };
+
+  renderHoverMarkersLayout = extData => {
+    const selected = extData.id === this.state.curVehicleId;
+    return (
+      <div style={{ position: "relative" }}>
+        {extData.id && (this.props.fixedTitle || selected) && (
+          <MarkerLabel selected data={extData} />
+        )}
+        <MarkerIcon
+          selected={selected}
+          data={extData}
+          setIconFont={this.props.setIconFont}
+        />
       </div>
     );
   };
 
   renderMarkersLayout = extData => {
     const selected = extData.id === this.selectedVehicleId;
+
     return (
       <div style={{ position: "relative" }}>
-        {selected && <this.MarkerLabel selected data={extData} />}
-        <this.MarkerIcon selected={selected} data={extData} />
+        {extData.id && (this.props.fixedTitle || selected) && (
+          <MarkerLabel selected data={extData} />
+        )}
+        <MarkerIcon
+          selected={selected}
+          data={extData}
+          setIconFont={this.props.setIconFont}
+        />
       </div>
     );
   };
@@ -264,16 +329,17 @@ export default class BusMap extends React.Component {
       parks,
       vehicles,
       center = [121.474827, 31.219855],
-      zoom = 11,
+      mapKey,
     } = this.props;
+
     return (
       <Map
         version="1.4.15"
-        amapkey={AMAP_KEY}
+        amapkey={mapKey}
         mapStyle={this.props.mapStyle}
         events={this.mapEvents}
         center={center}
-        zoom={zoom}
+        zoom={this.zoom}
       >
         <Markers
           key="parks"
