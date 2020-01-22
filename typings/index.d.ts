@@ -45,12 +45,13 @@ export interface BusMapProps {
   vehicles: [Vehicle]; // 车辆的数据信息
   zoom: number; // 地图的起始zoom
   clusterComponent?({ vehicles: [object], asJSX: boolean }): void; // 聚合marker component
-  minClusterSize: number; // 聚合点minClusterSize,
-  gridSize: number; // 聚合点gridSize,
+  minClusterSize?: number; // 聚合点minClusterSize,
+  gridSize?: number; // 聚合点gridSize,
   mapKey: string; // 地图key
-  fixedTitle: boolean; // 固定车辆title
-  hoverTitle: boolean; // 鼠标hover车辆的时候是否显示title
-  vehicleAnimationDisThreshold: number; // 车辆动画距离阈值，默认500， 阈值越大，跳点越少
+  fixedTitle?: boolean; // 固定车辆title
+  hoverTitle?: boolean; // 鼠标hover车辆的时候是否显示title
+  vehicleAnimationDisThreshold?: number; // 车辆动画距离阈值，默认500， 阈值越大，跳点越少
+  reRenderState?: string; // 重绘状态，如果 重绘状态发生改变那就重绘地图
 }
 
 export default BusMap;

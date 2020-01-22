@@ -70,6 +70,7 @@ export default class BusMap extends React.Component {
     gridSize: PropTypes.number, // 聚合点gridSize,
     hoverTitle: PropTypes.bool, // 鼠标hover 显示titile
     vehicleAnimationDisThreshold: PropTypes.number, // 车辆动画距离阈值，默认500， 阈值越大，跳点越少
+    reRenderState: PropTypes.string, // 重绘状态，如果 重绘状态发生改变那就重绘地图
   };
 
   // Set default props
@@ -172,6 +173,11 @@ export default class BusMap extends React.Component {
 
     // 停车场数据有更新，刷新地图
     if (!isEqual(nextProps.parks, this.props.parks)) {
+      return true;
+    }
+
+    // 重绘状态改变
+    if (nextProps.reRenderState !== this.props.reRenderState) {
       return true;
     }
 
