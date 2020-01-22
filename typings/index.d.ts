@@ -44,6 +44,11 @@ export interface BusMapProps {
   setIconFont?(icon: string, selected: boolean, data: object): void; // 设置地区icon,
   vehicles: [Vehicle]; // 车辆的数据信息
   zoom: number; // 地图的起始zoom
+  clusterComponent?({ vehicles: [object], asJSX: boolean }): void; // 聚合marker component
+  minClusterSize: number; // 聚合点minClusterSize,
+  gridSize: number; // 聚合点gridSize,
+  mapKey: string; // 地图key
+  fixedTitle: boolean; // 固定车辆title
 }
 
 export default BusMap;
