@@ -49,9 +49,7 @@
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react": "^16.0.0",
-    "react-dom": "^16.0.0"
-  },
-  "peerDependencies": {
+    "react-dom": "^16.0.0",
     "react-amap": "^1.2.8"
   },
   "devDependencies": {
